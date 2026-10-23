@@ -294,7 +294,7 @@ class Test{pascal}Plugin:
     else:
         console.print(f"[green]Created extension:[/green] {name}")
         console.print(f"  Package: {pkg}")
-        console.print(f"  Path: {out_path}", soft_wrap=True)
+        console.print(f"  Path: {out_path}")
         console.print(f"  Files: {len(generated_files)}")
         if type_names:
             console.print(f"  Types: {', '.join(type_names)}")
@@ -423,7 +423,7 @@ def extension_install(
         typer.echo(formatted)
     else:
         console.print(f"[green]Installed:[/green] {plugin_name}")
-        console.print(f"  Path: {path}", soft_wrap=True)
+        console.print(f"  Path: {path}")
         if verify:
             if verified:
                 console.print("  [green]Verified: plugin loaded successfully[/green]")

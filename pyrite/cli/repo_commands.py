@@ -49,7 +49,7 @@ def repo_subscribe(
 
         if result["success"]:
             console.print(f"[green]Subscribed to {result['repo']}[/green]")
-            console.print(f"  Path: {result['path']}", soft_wrap=True)
+            console.print(f"  Path: {result['path']}")
             console.print(f"  KBs discovered: {len(result['kbs'])}")
             for kb in result["kbs"]:
                 console.print(f"    - {kb}")
@@ -76,7 +76,7 @@ def repo_fork(
 
         if result["success"]:
             console.print(f"[green]Forked and cloned {result['repo']}[/green]")
-            console.print(f"  Path: {result['path']}", soft_wrap=True)
+            console.print(f"  Path: {result['path']}")
             console.print(f"  Upstream: {result.get('upstream', 'N/A')}")
             if result.get("kbs"):
                 console.print(f"  KBs: {', '.join(result['kbs'])}")
@@ -184,7 +184,7 @@ def repo_status(
             return
 
         console.print(f"\n[bold cyan]{status['name']}[/bold cyan]")
-        console.print(f"  Path: {status['local_path']}", soft_wrap=True)
+        console.print(f"  Path: {status['local_path']}")
         if status.get("remote_url"):
             console.print(f"  Remote: {status['remote_url']}")
         if status.get("current_branch"):

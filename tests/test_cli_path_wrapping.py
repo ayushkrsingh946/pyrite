@@ -16,7 +16,13 @@ from pyrite.storage.repository import new_entry_text
 runner = CliRunner()
 
 
-def test_export_site_long_path_not_wrapped(tmp_path, monkeypatch):
+def test_export_site_long_path_not_wrapped(tmp_path, monkeypatch, console_width):
+    console_width(80)
+    import pyrite.cli.export_commands
+
+    monkeypatch.setattr(pyrite.cli.export_commands.console, "_width", 80)
+    monkeypatch.setattr(pyrite.cli.export_commands.console, "_height", 25)
+
     kb_path = tmp_path / "notes_kb"
     kb_path.mkdir()
     entry_file = kb_path / "test-note.md"
@@ -56,7 +62,6 @@ def test_export_site_long_path_not_wrapped(tmp_path, monkeypatch):
     result = runner.invoke(
         app,
         ["export", "site", "-k", "notes", "-o", str(long_dest_dir)],
-        env={"COLUMNS": "80"},
     )
     assert result.exit_code == 0, result.output
 
@@ -67,7 +72,13 @@ def test_export_site_long_path_not_wrapped(tmp_path, monkeypatch):
     assert str(long_dest_dir) in output_lines[0]
 
 
-def test_index_sync_malformed_path_not_wrapped(tmp_path, monkeypatch):
+def test_index_sync_malformed_path_not_wrapped(tmp_path, monkeypatch, console_width):
+    console_width(80)
+    import pyrite.cli.index_commands
+
+    monkeypatch.setattr(pyrite.cli.index_commands.console, "_width", 80)
+    monkeypatch.setattr(pyrite.cli.index_commands.console, "_height", 25)
+
     kb_path = tmp_path / "notes_kb"
     nested_dir = (
         kb_path
@@ -90,7 +101,7 @@ def test_index_sync_malformed_path_not_wrapped(tmp_path, monkeypatch):
     monkeypatch.setenv("PYRITE_CONFIG_DIR", str(config_dir))
     save_config(config)
 
-    result = runner.invoke(app, ["index", "sync"], env={"COLUMNS": "80"})
+    result = runner.invoke(app, ["index", "sync"])
     assert result.exit_code == 0, result.output
 
     # Find bullet lines under Malformed:

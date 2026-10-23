@@ -157,8 +157,8 @@ def sw_new_adr(
     kb_name: str | None = typer.Option(None, "--kb", "-k", help="KB name"),
 ):
     """Create a new ADR with the next sequential number, through the write
-    pipeline (#391)."""
-    # Was: query the next number, then `file_path.write_text` the ADR directly
+    pipeline."""
+    # (#391) Was: query the next number, then `file_path.write_text` the ADR directly
     # -- no exists check (an existing ADR number or id was silently
     # overwritten), no validators, no before/after-save hooks, nothing indexed
     # until a separate `pyrite index sync`, and no KB resolved fell back to
@@ -450,7 +450,7 @@ def sw_epic_detail(
             continue
         console.print(f"[bold yellow]{status}[/bold yellow] ({len(items)})")
         for item in items:
-            console.print(f"  {item['id'][:20]}  {item['title']}")
+            console.print(f"  {item['id']}  {item['title']}")
     console.print()
 
 
@@ -1438,6 +1438,7 @@ def sw_components(
             meta = row["_meta"]
             table.add_row(
                 row["id"],
+                row["title"],
                 meta.get("kind", ""),
                 meta.get("path", ""),
                 meta.get("owner", ""),

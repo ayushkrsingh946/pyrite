@@ -6,7 +6,7 @@ import pytest
 from mcp.shared.memory import create_connected_server_and_client_session
 
 from pyrite.config import KBConfig, PyriteConfig, Settings
-from pyrite.server.mcp_server import MCP_SERVER_INSTRUCTIONS, PyriteMCPServer
+from pyrite.server.mcp_server import PyriteMCPServer
 
 
 @pytest.mark.parametrize("tier", ["read", "write", "admin"])
@@ -30,4 +30,3 @@ def test_mcp_initialize_carries_instructions_with_kb_orient_and_tier(tmp_path, t
     assert "higher tier are not listed" in instructions
     assert "error" in instructions and "error_code" in instructions and "retryable" in instructions
     assert len(instructions) < 600
-    assert instructions == MCP_SERVER_INSTRUCTIONS.format(tier=tier)

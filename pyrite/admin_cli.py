@@ -76,7 +76,7 @@ def kb_list(
 
     for kb in kbs:
         console.print(f"  [bold cyan]{kb.name}[/bold cyan] ({kb.kb_type})")
-        console.print(f"    Path: {kb.path}")
+        console.print(f"    Path: {kb.path}", soft_wrap=True)
         if kb.description:
             console.print(f"    {kb.description}")
 
@@ -442,7 +442,7 @@ def repo_status():
 
     for repo in config.repositories:
         console.print(f"  [bold cyan]{repo.name}[/bold cyan]")
-        console.print(f"    Path: {repo.path}")
+        console.print(f"    Path: {repo.path}", soft_wrap=True)
         if repo.remote:
             console.print(f"    Remote: {repo.remote}")
         console.print(f"    Branch: {repo.branch}")
@@ -592,7 +592,7 @@ def auth_logout():
 def config_show():
     """Show current configuration."""
     config_file = current_config_file()
-    console.print(f"[bold]Config file:[/bold] {config_file}")
+    console.print(f"[bold]Config file:[/bold] {config_file}", soft_wrap=True)
     console.print(f"[bold]Exists:[/bold] {config_file.exists()}")
 
     if config_file.exists():
@@ -601,7 +601,7 @@ def config_show():
         console.print(f"[bold]Repositories:[/bold] {len(config.repositories)}")
         console.print(f"[bold]Subscriptions:[/bold] {len(config.subscriptions)}")
         console.print(f"[bold]AI Provider:[/bold] {config.settings.ai_provider}")
-        console.print(f"[bold]Index Path:[/bold] {config.settings.index_path}")
+        console.print(f"[bold]Index Path:[/bold] {config.settings.index_path}", soft_wrap=True)
 
 
 @config_app.command("set")

@@ -204,8 +204,8 @@ def export_collection(
 
         console.print(f"[green]Exported {result['entries_exported']} entries[/green]")
         console.print(f"  Files created: {result['files_created']}")
-        console.print(f"  Manifest: {output / '_manifest.md'}")
-        console.print(f"  Output: {output}")
+        console.print(f"  Manifest: {output / '_manifest.md'}", soft_wrap=True)
+        console.print(f"  Output: {output}", soft_wrap=True)
         if unreadable:
             console.print(
                 f"[yellow]{len(unreadable)} matched entr(ies) could not be loaded "
@@ -301,7 +301,7 @@ def export_site(
         if result["skipped"]:
             console.print(f"  Skipped: {result['skipped']} (filtered)")
         console.print(f"  Files created: {result['files_created']}")
-        console.print(f"  Output: {content_dir}")
+        console.print(f"  Output: {content_dir}", soft_wrap=True)
 
         if init:
             console.print("")

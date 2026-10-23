@@ -1,0 +1,4 @@
+- Fix CLI help text rendering across subcommands: escape wikilink brackets in `pyrite rename --help`, replace historical developer notes with user documentation in `sw new-adr` and `zettel new`, clarify `create -k` requirement, explain orphan vs missing-link counts in `qa validate`, and document review outcome state changes (#1290).
+- Populate MCP server initialize instructions directing connecting clients to call `kb_orient` first (#1292).
+- Prevent entry ID truncation in `sw backlog`, `sw adrs`, and `sw epics` tables, and include `id` and `kb_name` in `sw components` JSON output (#1293).
+- Prevent long filesystem and output paths from wrapping across multiple lines in `export site`, `index sync`, and management commands (#1291).

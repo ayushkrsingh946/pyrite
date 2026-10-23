@@ -572,7 +572,7 @@ def init_kb(
         typer.echo(formatted)
     else:
         console.print(f"[green]Created KB:[/green] {kb_name}")
-        console.print(f"  Path: {path}")
+        console.print(f"  Path: {path}", soft_wrap=True)
         console.print(f"  Template: {template}")
         if type_names:
             console.print(f"  Types: {', '.join(type_names)}")

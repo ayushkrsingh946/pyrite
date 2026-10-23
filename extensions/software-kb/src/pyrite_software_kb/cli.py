@@ -124,7 +124,7 @@ def sw_adrs(
 
         table = Table(title="Architecture Decision Records")
         table.add_column("KB", style="dim")
-        table.add_column("ID", style="dim")
+        table.add_column("ID", style="dim", no_wrap=True)
         table.add_column("#", style="cyan", justify="right")
         table.add_column("Title")
         table.add_column("Status", style="yellow")
@@ -157,17 +157,15 @@ def sw_new_adr(
     kb_name: str | None = typer.Option(None, "--kb", "-k", help="KB name"),
 ):
     """Create a new ADR with the next sequential number, through the write
-    pipeline (#391).
-
-    Was: query the next number, then `file_path.write_text` the ADR directly
-    -- no exists check (an existing ADR number or id was silently
-    overwritten), no validators, no before/after-save hooks, nothing indexed
-    until a separate `pyrite index sync`, and no KB resolved fell back to
-    writing `./adrs` under the cwd. Now goes through `KBService.create_entry`;
-    the software-kb `adr` type's `file_pattern`
-    (``{adr_number:04d}-{title}.md``) keeps the `NNNN-slug.md` filename and
-    `adr-NNNN` id this command has always produced.
-    """
+    pipeline (#391)."""
+    # Was: query the next number, then `file_path.write_text` the ADR directly
+    # -- no exists check (an existing ADR number or id was silently
+    # overwritten), no validators, no before/after-save hooks, nothing indexed
+    # until a separate `pyrite index sync`, and no KB resolved fell back to
+    # writing `./adrs` under the cwd. Now goes through `KBService.create_entry`;
+    # the software-kb `adr` type's `file_pattern`
+    # (``{adr_number:04d}-{title}.md``) keeps the `NNNN-slug.md` filename and
+    # `adr-NNNN` id this command has always produced.
     from datetime import date
 
     from pyrite.exceptions import PyriteError
@@ -236,7 +234,7 @@ def sw_new_adr(
         file_path = repo._resolve_file_path(entry, repo._infer_subdir(entry))
 
         console.print(f"[green]Created ADR-{next_num:04d}:[/green] {title}")
-        console.print(f"  File: [cyan]{file_path}[/cyan]")
+        console.print(f"  File: [cyan]{file_path}[/cyan]", soft_wrap=True)
         console.print(f"  Status: [yellow]{status}[/yellow]")
     finally:
         db.close()
@@ -297,7 +295,7 @@ def sw_backlog(
             return
         for group in groups:
             table = Table(title=f"Epic: {group['epic_title']} ({group['count']} items)")
-            table.add_column("ID", style="cyan")
+            table.add_column("ID", style="cyan", no_wrap=True)
             table.add_column("Title")
             table.add_column("Kind", style="blue")
             table.add_column("Status", style="yellow")
@@ -307,7 +305,7 @@ def sw_backlog(
                 table.add_column("Rank", style="magenta")
             for item in group["items"]:
                 row_data = [
-                    item["id"][:12],
+                    item["id"],
                     item["title"],
                     item.get("kind", ""),
                     item["status"],
@@ -334,7 +332,7 @@ def sw_backlog(
         return
 
     table = Table(title="Backlog")
-    table.add_column("ID", style="cyan")
+    table.add_column("ID", style="cyan", no_wrap=True)
     table.add_column("Title")
     table.add_column("Kind", style="blue")
     table.add_column("Status", style="yellow")
@@ -345,7 +343,7 @@ def sw_backlog(
 
     for item in items:
         row_data = [
-            item["id"][:12],
+            item["id"],
             item["title"],
             item.get("kind", ""),
             item["status"],
@@ -391,7 +389,7 @@ def sw_epics(
         return
 
     table = Table(title="Epics")
-    table.add_column("ID", style="cyan")
+    table.add_column("ID", style="cyan", no_wrap=True)
     table.add_column("Title")
     table.add_column("Status", style="yellow")
     table.add_column("Priority", style="red")
@@ -401,7 +399,7 @@ def sw_epics(
         pct = ep["completion_pct"]
         bar = f"{ep['done']}/{ep['total']} ({pct}%)"
         table.add_row(
-            ep["id"][:20],
+            ep["id"],
             ep["title"],
             ep["status"],
             ep["priority"],
@@ -1299,13 +1297,20 @@ def sw_pull_next(
 def sw_review_cmd(
     item_id: str = typer.Argument(..., help="Backlog item ID"),
     outcome: str = typer.Option(
-        ..., "--outcome", "-o", help="Review outcome: approved or changes_requested"
+        ...,
+        "--outcome",
+        "-o",
+        help="Review outcome: approved (moves item to done) or changes_requested (moves item back to in_progress)",
     ),
     reviewer: str = typer.Option(..., "--reviewer", help="Who is reviewing"),
     feedback: str | None = typer.Option(None, "--feedback", help="Review notes/feedback"),
     kb_name: str | None = typer.Option(None, "--kb", "-k", help="KB name"),
 ):
-    """Record a review outcome for an item in review status."""
+    """Record a review outcome for an item in review status.
+
+    Outcome 'approved' moves the item to 'done'. Outcome 'changes_requested'
+    moves the item back to 'in_progress' and requires feedback.
+    """
     require_kb(load_config(), kb_name, output_format="rich")
     from .plugin import SoftwareKBPlugin
 
@@ -1358,7 +1363,7 @@ def sw_log_cmd(
         console.print(f"[green]Logged:[/green] {result['id']}")
         console.print(f"  Item: {item_id}")
         console.print(f"  Date: {result.get('date', '')}")
-        console.print(f"  File: [cyan]{result.get('filename', '')}[/cyan]")
+        console.print(f"  File: [cyan]{result.get('filename', '')}[/cyan]", soft_wrap=True)
     else:
         console.print(f"[red]Error:[/red] {result.get('error', 'Unknown error')}")
         raise typer.Exit(1)
@@ -1410,10 +1415,12 @@ def sw_components(
             _json_output(
                 [
                     {
+                        "id": r["id"],
                         "title": r["title"],
                         "kind": r["_meta"].get("kind", ""),
                         "path": r["_meta"].get("path", ""),
                         "owner": r["_meta"].get("owner", ""),
+                        "kb_name": r.get("kb_name", kb_name or ""),
                     }
                     for r in rows
                 ]
@@ -1421,6 +1428,7 @@ def sw_components(
             return
 
         table = Table(title="Components")
+        table.add_column("ID", style="cyan", no_wrap=True)
         table.add_column("Title")
         table.add_column("Kind", style="blue")
         table.add_column("Path", style="dim")
@@ -1429,7 +1437,7 @@ def sw_components(
         for row in rows:
             meta = row["_meta"]
             table.add_row(
-                row["title"],
+                row["id"],
                 meta.get("kind", ""),
                 meta.get("path", ""),
                 meta.get("owner", ""),

@@ -247,7 +247,7 @@ def index_sync(
     if malformed:
         console.print(f"  [yellow]Malformed: {len(malformed)} file(s) skipped[/yellow]")
         for entry in malformed[:5]:
-            console.print(f"    [dim]• {entry['path']}[/dim]")
+            console.print(f"    [dim]• {entry['path']}[/dim]", soft_wrap=True)
         if len(malformed) > 5:
             console.print(f"    [dim]… and {len(malformed) - 5} more[/dim]")
     skipped = results.get("skipped", [])
@@ -258,6 +258,7 @@ def index_sync(
                 f"    {entry['path']}: {entry['reason']}",
                 markup=False,
                 highlight=False,
+                soft_wrap=True,
             )
         if len(skipped) > 5:
             console.print(f"    [dim]... and {len(skipped) - 5} more[/dim]")
@@ -268,7 +269,7 @@ def index_sync(
             f"  [yellow]Duplicate ids: {len(duplicates)} (one file indexed per id)[/yellow]"
         )
         for line in _duplicate_lines(duplicates):
-            console.print(f"    • {line}", markup=False, highlight=False)
+            console.print(f"    • {line}", markup=False, highlight=False, soft_wrap=True)
 
     # Auto-embed new/updated entries if embeddings are available.
     #

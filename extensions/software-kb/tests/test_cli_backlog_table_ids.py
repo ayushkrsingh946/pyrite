@@ -108,7 +108,9 @@ def test_sw_components_json_and_rich_include_id_and_kb_name(sw_env):
     rich_res = runner.invoke(sw_app, ["components", "-k", "sw-kb", "--format", "rich"])
     assert rich_res.exit_code == 0, rich_res.output
     assert comp_id in rich_res.output
-    assert comp_title in rich_res.output, f"Expected title '{comp_title}' in Rich output:\n{rich_res.output}"
+    assert comp_title in rich_res.output, (
+        f"Expected title '{comp_title}' in Rich output:\n{rich_res.output}"
+    )
 
 
 def test_sw_epics_and_epic_detail_preserve_full_id(sw_env):
@@ -129,7 +131,10 @@ def test_sw_epics_and_epic_detail_preserve_full_id(sw_env):
     db._raw_conn.execute(
         "INSERT INTO entry (id, kb_name, entry_type, title, body, metadata, importance, status, priority, created_at, updated_at) "
         "VALUES (?, 'sw-kb', 'backlog_item', 'Recurring subscription billing', '', ?, 5, 'in_progress', 'high', '2026-10-23T00:00:00', '2026-10-23T00:00:00')",
-        (long_item_id, json.dumps({"epic": long_epic_id, "status": "in_progress", "priority": "high"})),
+        (
+            long_item_id,
+            json.dumps({"epic": long_epic_id, "status": "in_progress", "priority": "high"}),
+        ),
     )
     db._raw_conn.execute(
         "INSERT INTO link (source_id, source_kb, target_id, target_kb, relation, inverse_relation) "

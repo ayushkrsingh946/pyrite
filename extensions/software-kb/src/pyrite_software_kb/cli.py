@@ -154,7 +154,7 @@ def sw_adrs(
 
         table = Table(title="Architecture Decision Records")
         table.add_column("KB", style="dim")
-        table.add_column("ID", style="dim")
+        table.add_column("ID", style="dim", no_wrap=True, overflow="fold")
         table.add_column("#", style="cyan", justify="right")
         table.add_column("Title")
         table.add_column("Status", style="yellow")
@@ -327,7 +327,7 @@ def sw_backlog(
             return
         for group in groups:
             table = Table(title=f"Epic: {group['epic_title']} ({group['count']} items)")
-            table.add_column("ID", style="cyan")
+            table.add_column("ID", style="cyan", no_wrap=True, overflow="fold")
             table.add_column("Title")
             table.add_column("Kind", style="blue")
             table.add_column("Status", style="yellow")
@@ -337,7 +337,7 @@ def sw_backlog(
                 table.add_column("Rank", style="magenta")
             for item in group["items"]:
                 row_data = [
-                    item["id"][:12],
+                    item["id"],
                     item["title"],
                     item.get("kind", ""),
                     item["status"],
@@ -364,7 +364,7 @@ def sw_backlog(
         return
 
     table = Table(title="Backlog")
-    table.add_column("ID", style="cyan")
+    table.add_column("ID", style="cyan", no_wrap=True, overflow="fold")
     table.add_column("Title")
     table.add_column("Kind", style="blue")
     table.add_column("Status", style="yellow")
@@ -375,7 +375,7 @@ def sw_backlog(
 
     for item in items:
         row_data = [
-            item["id"][:12],
+            item["id"],
             item["title"],
             item.get("kind", ""),
             item["status"],
@@ -421,7 +421,7 @@ def sw_epics(
         return
 
     table = Table(title="Epics")
-    table.add_column("ID", style="cyan")
+    table.add_column("ID", style="cyan", no_wrap=True, overflow="fold")
     table.add_column("Title")
     table.add_column("Status", style="yellow")
     table.add_column("Priority", style="red")
@@ -431,7 +431,7 @@ def sw_epics(
         pct = ep["completion_pct"]
         bar = f"{ep['done']}/{ep['total']} ({pct}%)"
         table.add_row(
-            ep["id"][:20],
+            ep["id"],
             ep["title"],
             ep["status"],
             ep["priority"],
@@ -483,7 +483,7 @@ def sw_epic_detail(
             continue
         console.print(f"[bold yellow]{status}[/bold yellow] ({len(items)})")
         for item in items:
-            console.print(f"  {item['id'][:20]}  {item['title']}")
+            console.print(f"  {item['id']}  {item['title']}")
     console.print()
 
 
@@ -1488,10 +1488,12 @@ def sw_components(
             _json_output(
                 [
                     {
+                        "id": r["id"],
                         "title": r["title"],
                         "kind": r["_meta"].get("kind", ""),
                         "path": r["_meta"].get("path", ""),
                         "owner": r["_meta"].get("owner", ""),
+                        "kb_name": r.get("kb_name", kb_name or ""),
                     }
                     for r in rows
                 ]
@@ -1499,6 +1501,7 @@ def sw_components(
             return
 
         table = Table(title="Components")
+        table.add_column("ID", style="cyan", no_wrap=True, overflow="fold")
         table.add_column("Title")
         table.add_column("Kind", style="blue")
         table.add_column("Path", style="dim")
@@ -1507,6 +1510,7 @@ def sw_components(
         for row in rows:
             meta = row["_meta"]
             table.add_row(
+                row["id"],
                 row["title"],
                 meta.get("kind", ""),
                 meta.get("path", ""),
